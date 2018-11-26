@@ -1,7 +1,7 @@
 export enum ShipTypes {
   L = 'Ship L',
   I = 'Ship I',
-  D = 'Ship Dot',
+  D = 'Ship D',
 }
 
 export interface IShip {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IShip } from '../../models/ship.model';
+import { IShip, ShipTypes } from '../../models/ship.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,13 +22,24 @@ export class BoardService {
   addShip(boardSchema: string[][], ship: IShip) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
-    if (!boardSchema[randomRow][randomColumn] && ship.width === 1) {
-      boardSchema[randomRow][randomColumn] = ship.type;
+    switch (ship.width) {
+      case 1:
+        boardSchema[randomRow][randomColumn] = ship.type;
+        break;
+      case 4:
+        boardSchema[randomRow][randomColumn] = ship.type;
+        break;
+      default:
+        break;
     }
   }
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  getRandomDirection(boardSchema, randomRow, randomColumn) {
+
   }
 
   randomShot(boardSchema) {
@@ -39,7 +50,7 @@ export class BoardService {
       case '':
         boardSchema[randomRow][randomColumn] = 'x';
         break;
-      case 'Ship Dot':
+      case 'Ship D':
         boardSchema[randomRow][randomColumn] = 'kill Ship Dot';
         break;
       default:
