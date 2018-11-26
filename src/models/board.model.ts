@@ -1,5 +1,4 @@
 export interface IBoard {
-  column: Array<string>;
-  row: Array<string>;
+  schema: string[][];
   ship: number;
 }

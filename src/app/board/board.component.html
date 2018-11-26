@@ -1,3 +1,7 @@
 <div class="board">
-  <div class="board-item"></div>
+  <div class="board-row" *ngFor="let row of board.schema">
+    <div class="board-column" *ngFor="let column of row">
+      {{column}}
+    </div>
+  </div>
 </div>

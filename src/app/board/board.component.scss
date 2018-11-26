@@ -1,0 +1,14 @@
+.board {
+  margin: 0 auto;
+}
+
+.board-row {
+  display: flex;
+}
+
+.board-column {
+  width: 50px;
+  background: cadetblue;
+  height: 50px;
+  border: 1px solid white;
+}
