@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IShip, ShipTypes } from '../../models/ship.model';
+import { IShip, ShipDirection, ShipTypes } from '../../models/ship.model';
+import { IBoardItem } from '../../models/board.model';
 
 @Injectable({
   providedIn: 'root'
@@ -7,27 +8,35 @@ import { IShip, ShipTypes } from '../../models/ship.model';
 export class BoardService {
   constructor() { }
 
-  createBoard(size): string[][] {
-    const boardSchema: string[][] = [];
+  createBoard(size): IBoardItem[][] {
+    const boardSchema: IBoardItem[][] = [];
     for (let i = 0; i < size; i++) {
       boardSchema[i] = [];
       for (let j = 0; j < size; j++) {
-        boardSchema[i][j] = '';
+        boardSchema[i][j] = {
+          shipType: null,
+          occupied: false,
+          crushed: false
+        };
       }
     }
 
     return boardSchema;
   }
 
-  addShip(boardSchema: string[][], ship: IShip) {
+  addShip(boardSchema: IBoardItem[][], ship: IShip) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
     switch (ship.width) {
       case 1:
-        boardSchema[randomRow][randomColumn] = ship.type;
+        boardSchema[randomRow][randomColumn] = {
+          shipType: ship.type,
+          occupied: true,
+          crushed: false
+        };
         break;
       case 4:
-        boardSchema[randomRow][randomColumn] = ship.type;
+        this.rotationShip(boardSchema, randomRow, randomColumn, ship);
         break;
       default:
         break;
@@ -38,24 +47,66 @@ export class BoardService {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  getRandomDirection(boardSchema, randomRow, randomColumn) {
+  rotationShip(boardSchema, randomRow, randomColumn, ship) {
+    const randomDirection = this.getRandomInt(1, 4);
+    switch (randomDirection) {
+      case ShipDirection.Left:
+        this.buildShip(boardSchema,
+          {row: randomRow, column: randomColumn},
+          {row: randomRow, column: randomColumn + 3}, ship
+        );
+        break;
+      case ShipDirection.Right:
+        this.buildShip(boardSchema,
+          {row: randomRow, column: randomColumn - 3},
+          {row: randomRow, column: randomColumn}, ship
+        );
+        break;
+      case ShipDirection.Top:
+        this.buildShip(boardSchema,
+          {row: randomRow, column: randomColumn},
+          {row: randomRow + 3, column: randomColumn}, ship
+        );
+        break;
+      case ShipDirection.Bottom:
+        this.buildShip(boardSchema,
+          {row: randomRow - 3, column: randomColumn},
+          {row: randomRow, column: randomColumn}, ship
+        );
+        break;
+    }
+  }
 
+  buildShip(boardSchema, startLocation, endLocation, ship) {
+    if (startLocation.row !== endLocation.row) {
+      for (let i = startLocation.row; i <= endLocation.row; i++) {
+        boardSchema[i][startLocation.column] = {
+          shipType: ship.type,
+          occupied: true,
+          crushed: false
+        };
+      }
+    } else if (startLocation.column !== endLocation.column) {
+      for (let i = startLocation.column; i <= endLocation.column; i++) {
+        boardSchema[startLocation.row][i] = {
+          shipType: ship.type,
+          occupied: true,
+          crushed: false
+        };
+      }
+    } else {
+      boardSchema[startLocation.row][startLocation.column] = {
+        shipType: ship.type,
+        occupied: true,
+        crushed: false
+      };
+    }
   }
 
   randomShot(boardSchema) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
-
-    switch (boardSchema[randomRow][randomColumn]) {
-      case '':
-        boardSchema[randomRow][randomColumn] = 'x';
-        break;
-      case 'Ship D':
-        boardSchema[randomRow][randomColumn] = 'kill Ship Dot';
-        break;
-      default:
-        this.randomShot(boardSchema);
-        break;
-    }
+    console.log(randomRow, randomColumn);
+    boardSchema[randomRow][randomColumn] = {...boardSchema[randomRow][randomColumn], crushed: true };
   }
 }

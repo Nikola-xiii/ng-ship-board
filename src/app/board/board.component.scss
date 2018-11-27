@@ -10,5 +10,20 @@
   width: 50px;
   background: cadetblue;
   height: 50px;
+  text-align: center;
+  font-size: 40px;
   border: 1px solid white;
+}
+
+.ship {
+  background: coral;
+}
+
+.crushed {
+  background: red;
+
+  &.ship {
+    color: white;
+    background: black;
+  }
 }

@@ -19,6 +19,16 @@ export class AppComponent {
     };
 
     this.boardService.addShip(this.board.schema, {
+      type: ShipTypes.I,
+      width: 4
+    });
+
+    this.boardService.addShip(this.board.schema, {
+      type: ShipTypes.L,
+      width: 4
+    });
+
+    this.boardService.addShip(this.board.schema, {
       type: ShipTypes.D,
       width: 1
     });
