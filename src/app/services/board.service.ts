@@ -49,31 +49,30 @@ export class BoardService {
 
   rotationShip(boardSchema, randomRow, randomColumn, ship) {
     const randomDirection = this.getRandomInt(1, 4);
+    let startLocation = {};
+    let endLocation = {};
     switch (randomDirection) {
       case ShipDirection.Left:
-        this.buildShip(boardSchema,
-          {row: randomRow, column: randomColumn},
-          {row: randomRow, column: randomColumn + 3}, ship
-        );
+        startLocation = {row: randomRow, column: randomColumn};
+        endLocation = {row: randomRow, column: randomColumn + 3};
         break;
       case ShipDirection.Right:
-        this.buildShip(boardSchema,
-          {row: randomRow, column: randomColumn - 3},
-          {row: randomRow, column: randomColumn}, ship
-        );
+        startLocation = {row: randomRow, column: randomColumn - 3};
+        endLocation = {row: randomRow, column: randomColumn};
         break;
       case ShipDirection.Top:
-        this.buildShip(boardSchema,
-          {row: randomRow, column: randomColumn},
-          {row: randomRow + 3, column: randomColumn}, ship
-        );
+        startLocation = {row: randomRow, column: randomColumn};
+        endLocation = {row: randomRow + 3, column: randomColumn};
         break;
       case ShipDirection.Bottom:
-        this.buildShip(boardSchema,
-          {row: randomRow - 3, column: randomColumn},
-          {row: randomRow, column: randomColumn}, ship
-        );
+        startLocation = {row: randomRow - 3, column: randomColumn};
+        endLocation = {row: randomRow, column: randomColumn};
         break;
+    }
+    if (endLocation.row > 9 || startLocation.row < 0 || startLocation.column < 0 || endLocation.column > 9) {
+      this.rotationShip(boardSchema, randomRow, randomColumn, ship);
+    } else {
+      this.buildShip(boardSchema, startLocation, endLocation, ship);
     }
   }
 
