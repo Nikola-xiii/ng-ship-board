@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BoardService } from './services/board.service';
 import { IBoard } from '../models/board.model';
 import { IShip, ShipTypes } from '../models/ship.model';
+import { IPlayer } from '../models/player.model';
 
 @Component({
   selector: 'app-root',
@@ -28,13 +29,24 @@ export class AppComponent {
       width: 1
     },
   ];
+  player1: IPlayer = {
+    name: 'User 1',
+    shots: 0,
+    points: 0
+  };
+  player2: IPlayer = {
+    name: 'User 2',
+    shots: 0,
+    points: 0
+  };
   board: IBoard;
 
   constructor(private boardService: BoardService) {
     this.board = boardService.createBoard(10, this.ships);
   }
 
-  playerShot() {
-    this.boardService.randomShot(this.board.schema);
+  playerShot(player) {
+    player.shot = player.shot + 1;
+    this.boardService.randomShot(player, this.board.schema);
   }
 }

@@ -5,4 +5,5 @@
   </h1>
 </div>
 <app-board [board]="board"></app-board>
-<button (click)="playerShot()" class="btn-shot">Random Shot!</button>
+<app-player [player]="player1" (shot)="playerShot($event)"></app-player>
+<app-player [player]="player2" (shot)="playerShot($event)"></app-player>

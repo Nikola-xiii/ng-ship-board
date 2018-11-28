@@ -110,7 +110,7 @@ export class BoardService {
     return false;
   }
 
-  randomShot(boardSchema) {
+  randomShot(player, boardSchema) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
     console.log(randomRow, randomColumn);
