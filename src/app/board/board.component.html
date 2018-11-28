@@ -1,6 +1,6 @@
 <div class="board">
   <div class="board-row" *ngFor="let row of board.schema">
-    <div class="board-column" [class.ship]="column.shipType" [class.crushed]="column.crushed" *ngFor="let column of row">
+    <div class="board-column" [class.occupied]="column.occupied" [class.ship]="column.shipType" [class.crushed]="column.crushed" *ngFor="let column of row">
       {{column.shipType}}
     </div>
   </div>

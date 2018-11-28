@@ -1,8 +1,8 @@
-import { ShipTypes } from './ship.model';
+import { IShip, ShipTypes } from './ship.model';
 
 export interface IBoard {
   schema: IBoardItem[][];
-  ship: number;
+  ships: IShip[];
 }
 
 export interface IBoardItem {

@@ -6,12 +6,16 @@ export enum ShipTypes {
 
 export interface IShip {
   type: ShipTypes;
+  locations: ILocation[];
   width: number;
 }
 
+export interface ILocation {
+  row: number;
+  column: number;
+}
+
 export enum ShipDirection {
-  Left = 1,
-  Right = 2,
-  Top = 3,
-  Bottom = 4
+  Vertical = 1,
+  Horizontal = 2
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BoardService } from './services/board.service';
 import { IBoard } from '../models/board.model';
-import { ShipTypes } from '../models/ship.model';
+import { IShip, ShipTypes } from '../models/ship.model';
 
 @Component({
   selector: 'app-root',
@@ -10,33 +10,28 @@ import { ShipTypes } from '../models/ship.model';
 })
 export class AppComponent {
   title = 'Ship Board Game';
+  ships: Partial<IShip>[] = [
+    {
+      type: ShipTypes.L,
+      width: 4
+    },
+    {
+      type: ShipTypes.I,
+      width: 4
+    },
+    {
+      type: ShipTypes.D,
+      width: 1
+    },
+    {
+      type: ShipTypes.D,
+      width: 1
+    },
+  ];
   board: IBoard;
 
   constructor(private boardService: BoardService) {
-    this.board = {
-      schema: boardService.createBoard(10),
-      ship: 4
-    };
-
-    this.boardService.addShip(this.board.schema, {
-      type: ShipTypes.I,
-      width: 4
-    });
-
-    this.boardService.addShip(this.board.schema, {
-      type: ShipTypes.L,
-      width: 4
-    });
-
-    this.boardService.addShip(this.board.schema, {
-      type: ShipTypes.D,
-      width: 1
-    });
-
-    this.boardService.addShip(this.board.schema, {
-      type: ShipTypes.D,
-      width: 1
-    });
+    this.board = boardService.createBoard(10, this.ships);
   }
 
   playerShot() {
