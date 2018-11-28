@@ -10,9 +10,15 @@ export class BoardService {
 
   createBoard(size, ships): IBoard {
     const boardSchema: IBoardItem[][] = [];
+    const locatedShips: IShip[] = [];
 
     ships.map(ship => {
-      ship.locations = this.setShipLocation(ship);
+      let locations = {};
+      do {
+        locations = this.setShipLocation(ship);
+        console.log(this.collision(locations, ships));
+      } while (this.collision(locations, ships));
+      ship.locations = locations;
     });
 
 
@@ -39,7 +45,7 @@ export class BoardService {
 
     return {
       schema: boardSchema,
-      ships
+      ships: locatedShips
     };
   }
 
@@ -70,16 +76,36 @@ export class BoardService {
   }
 
   collision(locations, ships) {
-    ships.forEach(ship => {
-      locations.forEach(location => {
-        console.log(ship.locations);
-        if (ship.locations && ship.locations.find(loc => loc.row === location.row && loc.column === location.column)) {
-          return true;
-        } else {
+    const neighborLocations = [];
+    locations.forEach(location => {
+      neighborLocations.push({row: location.row - 1, column: location.column});
+      neighborLocations.push({row: location.row + 1, column: location.column});
+      neighborLocations.push({row: location.row, column: location.column - 1});
+      neighborLocations.push({row: location.row, column: location.column + 1});
+      neighborLocations.push({row: location.row - 1, column: location.column - 1});
+      neighborLocations.push({row: location.row + 1, column: location.column + 1});
+      neighborLocations.push({row: location.row + 1, column: location.column - 1});
+      neighborLocations.push({row: location.row - 1, column: location.column + 1});
+    });
+    for (let i = 0; i < ships.length; i++) {
+      const ship = ships[i];
+
+      for (let j = 0; j < locations.length; j++) {
+        if (ship.locations && ship.locations.find(
+          location => location.row === locations[j].row && location.column === locations[j].column)
+        ) {
           return true;
         }
-      });
-    });
+      }
+
+      for (let j = 0; j < neighborLocations.length; j++) {
+        if (ship.locations && ship.locations.find(
+          location => location.row === neighborLocations[j].row && location.column === neighborLocations[j].column)
+        ) {
+          return true;
+        }
+      }
+    }
 
     return false;
   }
