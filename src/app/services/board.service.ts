@@ -80,10 +80,13 @@ export class BoardService {
     locations.forEach(location => {
       neighborLocations.push({row: location.row - 1, column: location.column});
       neighborLocations.push({row: location.row + 1, column: location.column});
+
       neighborLocations.push({row: location.row, column: location.column - 1});
       neighborLocations.push({row: location.row, column: location.column + 1});
+
       neighborLocations.push({row: location.row - 1, column: location.column - 1});
       neighborLocations.push({row: location.row + 1, column: location.column + 1});
+
       neighborLocations.push({row: location.row + 1, column: location.column - 1});
       neighborLocations.push({row: location.row - 1, column: location.column + 1});
     });
