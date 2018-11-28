@@ -46,7 +46,8 @@ export class AppComponent {
   }
 
   playerShot(player) {
-    player.shot = player.shot + 1;
+    console.log(player);
+    player.shots = player.shots + 1;
     this.boardService.randomShot(player, this.board.schema);
   }
 }

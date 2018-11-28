@@ -110,10 +110,12 @@ export class BoardService {
     return false;
   }
 
-  randomShot(player, boardSchema) {
+  randomShot(player, boardSchema: IBoardItem[][]) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
-    console.log(randomRow, randomColumn);
+    if (boardSchema[randomRow][randomColumn].occupied) {
+      player.points = player.points + 1;
+    }
     boardSchema[randomRow][randomColumn] = {...boardSchema[randomRow][randomColumn], crushed: true };
   }
 }
