@@ -9,6 +9,7 @@ import { IPlayer } from '../../models/player.model';
 export class BoardService {
   constructor() { }
 
+  // Public create board method
   createBoard(size: number, ships: IShip[]): IBoard {
     const boardSchema: IBoardItem[][] = this.buildEmptyBoard(size);
     this.buildShips(ships, boardSchema);
@@ -19,6 +20,7 @@ export class BoardService {
     };
   }
 
+  // Build empty board
   private buildEmptyBoard(size: number): IBoardItem[][] {
     const boardSchema = [];
 
@@ -37,7 +39,9 @@ export class BoardService {
     return boardSchema;
   }
 
+  // Generate location for ship and add to the board
   private buildShips(ships: IShip[], boardSchema: IBoardItem[][]) {
+    // Generate and validate location
     ships.map(ship => {
       let locations = [];
       do {
@@ -46,6 +50,7 @@ export class BoardService {
       ship.locations = locations;
     });
 
+    // Add to the board
     ships.forEach(ship => {
       ship.locations.forEach(location => {
         boardSchema[location.row][location.column] = {
@@ -58,6 +63,7 @@ export class BoardService {
     });
   }
 
+  // Random generator for ship location
   private setShipLocation(ship: IShip): ILocation[] {
     const direction = this.getRandomInt(1, 2);
     const shipLocation = [];
@@ -80,11 +86,13 @@ export class BoardService {
     return shipLocation;
   }
 
+  // Check collision for the location
   private collision(locations: ILocation[], ships: IShip[]): boolean {
-    let neighborLocations = this.getNeighborLocations(locations);
+    const neighborLocations = this.getNeighborLocations(locations);
     for (let i = 0; i < ships.length; i++) {
       const ship = ships[i];
 
+      // Check location
       for (let j = 0; j < locations.length; j++) {
         if (ship.locations && ship.locations.find(
           location => location.row === locations[j].row && location.column === locations[j].column)
@@ -93,6 +101,7 @@ export class BoardService {
         }
       }
 
+      // Check neighbor locations
       for (let j = 0; j < neighborLocations.length; j++) {
         if (ship.locations && ship.locations.find(
           location => location.row === neighborLocations[j].row && location.column === neighborLocations[j].column)
@@ -105,6 +114,7 @@ export class BoardService {
     return false;
   }
 
+  // Generator neighbor location for ship
   getNeighborLocations(locations: ILocation[]): ILocation[] {
     let neighborLocations = [];
     locations.forEach(location => {
@@ -119,6 +129,7 @@ export class BoardService {
           {row: location.row - 1, column: location.column + 1}
         ];
 
+      // Push unique location only
       allLocations.forEach(item => {
         if (!neighborLocations.length) {
           neighborLocations.push(item);
@@ -129,6 +140,7 @@ export class BoardService {
       });
     });
 
+    // Validate location
     neighborLocations = neighborLocations.filter(location => {
       if (location.row < 0 || location.row > 9) {
         return false;
@@ -143,33 +155,44 @@ export class BoardService {
     return neighborLocations;
   }
 
+  // Random shot behavior method
   public randomShot(player: IPlayer, board: IBoard): void {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
+
+    // Duplicate shop
     if (board.schema[randomRow][randomColumn].crushed) {
       this.randomShot(player, board);
     }
 
+    // Hit ship
     if (board.schema[randomRow][randomColumn].occupied) {
       player.points = player.points + 1;
       this.crushedShip(board, {row: randomRow, column: randomColumn});
     }
+
+    // Hit empty
     board.schema[randomRow][randomColumn] = {...board.schema[randomRow][randomColumn], crushed: true };
-    console.log(board.ships);
   }
 
+  // Shot on ship behavior
   crushedShip(board: IBoard, shotLocation: ILocation): void {
-    const _shipId = board.schema[shotLocation.row][shotLocation.column].shipId;
-    const crushedShip = board.ships.find(ship => ship.id === _shipId);
+    const crushedShipId = board.schema[shotLocation.row][shotLocation.column].shipId;
+    const crushedShip = board.ships.find(ship => ship.id === crushedShipId);
+
+    // hit ship location
     crushedShip.locations = crushedShip.locations.filter(
       location => !(location.row === shotLocation.row && location.column === shotLocation.column)
     );
+
+    // remove fully crashed ship
     if (crushedShip.locations.length === 0) {
-      board.ships = board.ships.filter(ship => ship.id !== _shipId);
+      board.ships = board.ships.filter(ship => ship.id !== crushedShipId);
     }
     board.schema[shotLocation.row][shotLocation.column].occupied = false;
   }
 
+  // Random method
   private getRandomInt(min, max): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
