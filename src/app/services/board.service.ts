@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IShip, ShipDirection } from '../../models/ship.model';
+import { ILocation, IShip, ShipDirection } from '../../models/ship.model';
 import { IBoard, IBoardItem } from '../../models/board.model';
 import { IPlayer } from '../../models/player.model';
 
@@ -9,19 +9,18 @@ import { IPlayer } from '../../models/player.model';
 export class BoardService {
   constructor() { }
 
-  createBoard(size, ships): IBoard {
-    const boardSchema: IBoardItem[][] = [];
-    const locatedShips: IShip[] = [];
+  createBoard(size: number, ships: IShip[]): IBoard {
+    const boardSchema: IBoardItem[][] = this.buildEmptyBoard(size);
+    this.buildShips(ships, boardSchema);
 
-    ships.map(ship => {
-      let locations = {};
-      do {
-        locations = this.setShipLocation(ship);
-        console.log(this.collision(locations, ships));
-      } while (this.collision(locations, ships));
-      ship.locations = locations;
-    });
+    return {
+      schema: boardSchema,
+      ships
+    };
+  }
 
+  private buildEmptyBoard(size: number): IBoardItem[][] {
+    const boardSchema = [];
 
     for (let i = 0; i < size; i++) {
       boardSchema[i] = [];
@@ -35,6 +34,19 @@ export class BoardService {
       }
     }
 
+    return boardSchema;
+  }
+
+  private buildShips(ships: IShip[], boardSchema: IBoardItem[][]) {
+    ships.map(ship => {
+      let locations = {};
+      do {
+        locations = this.setShipLocation(ship);
+        console.log(this.collision(locations, ships));
+      } while (this.collision(locations, ships));
+      ship.locations = locations;
+    });
+
     ships.forEach(ship => {
       ship.locations.forEach(location => {
         boardSchema[location.row][location.column] = {
@@ -45,18 +57,9 @@ export class BoardService {
         };
       });
     });
-
-    return {
-      schema: boardSchema,
-      ships
-    };
   }
 
-  getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  setShipLocation(ship: IShip) {
+  private setShipLocation(ship: IShip): ILocation[] {
     const direction = this.getRandomInt(1, 2);
     const shipLocation = [];
     if (direction === ShipDirection.Horizontal) {
@@ -78,7 +81,7 @@ export class BoardService {
     return shipLocation;
   }
 
-  collision(locations, ships) {
+  private collision(locations: ILocation[], ships: IShip[]): boolean {
     const neighborLocations = [];
     locations.forEach(location => {
       neighborLocations.push({row: location.row - 1, column: location.column});
@@ -116,7 +119,7 @@ export class BoardService {
     return false;
   }
 
-  randomShot(player: IPlayer, board: IBoard) {
+  public randomShot(player: IPlayer, board: IBoard): void {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
     if (board.schema[randomRow][randomColumn].occupied) {
@@ -134,5 +137,9 @@ export class BoardService {
     }
     board.schema[randomRow][randomColumn] = {...board.schema[randomRow][randomColumn], crushed: true };
     console.log(board.ships);
+  }
+
+  private getRandomInt(min, max): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
