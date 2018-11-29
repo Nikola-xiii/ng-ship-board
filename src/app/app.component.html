@@ -7,8 +7,8 @@
 <div class="content">
   <app-board [board]="board"></app-board>
   <div class="players">
-    <app-player [player]="player1" *ngIf="player1.shots <= player2.shots" (shot)="playerShot($event)"></app-player>
-    <app-player [player]="player2" *ngIf="player2.shots <= player1.shots" (shot)="playerShot($event)"></app-player>
+    <app-player [player]="player1" [disabled]="player1.shots <= player2.shots" (shot)="playerShot($event)"></app-player>
+    <app-player [player]="player2" [disabled]="player2.shots <= player1.shots" (shot)="playerShot($event)"></app-player>
   </div>
 </div>
 <div *ngIf="board.ships.length === 0">

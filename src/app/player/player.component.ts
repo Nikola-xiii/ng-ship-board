@@ -13,6 +13,9 @@ export class PlayerComponent {
   @Output()
   shot = new EventEmitter();
 
+  @Input()
+  disabled = false;
+
   constructor() { }
 
   playerShot() {

@@ -2,6 +2,5 @@
   <p><strong>Name: {{player.name}}</strong></p>
   <p><strong>Score: {{player.points}}</strong></p>
   <p><strong>Shots: {{player.shots}}</strong></p>
-  <button (click)="playerShot()">Random Shot</button>
-  <p *ngIf="player.win">Player <strong>{{player.name}}</strong> win!!!</p>
+  <button *ngIf="disabled" (click)="playerShot()">Random Shot</button>
 </div>
