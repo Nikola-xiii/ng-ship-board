@@ -13,18 +13,22 @@ export class AppComponent {
   title = 'Ship Board Game';
   ships: Partial<IShip>[] = [
     {
+      id: 1,
       type: ShipTypes.L,
       width: 4
     },
     {
+      id: 2,
       type: ShipTypes.I,
       width: 4
     },
     {
+      id: 3,
       type: ShipTypes.D,
       width: 1
     },
     {
+      id: 4,
       type: ShipTypes.D,
       width: 1
     },
@@ -48,6 +52,6 @@ export class AppComponent {
   playerShot(player) {
     console.log(player);
     player.shots = player.shots + 1;
-    this.boardService.randomShot(player, this.board.schema);
+    this.boardService.randomShot(player, this.board);
   }
 }

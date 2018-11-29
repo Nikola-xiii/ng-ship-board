@@ -5,6 +5,7 @@ export enum ShipTypes {
 }
 
 export interface IShip {
+  id: number;
   type: ShipTypes;
   locations: ILocation[];
   width: number;

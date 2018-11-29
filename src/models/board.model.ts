@@ -8,5 +8,6 @@ export interface IBoard {
 export interface IBoardItem {
   occupied: boolean;
   crushed: boolean;
+  shipId: number;
   shipType: ShipTypes;
 }

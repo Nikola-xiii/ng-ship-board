@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IShip, ShipDirection, ShipTypes } from '../../models/ship.model';
+import { IShip, ShipDirection } from '../../models/ship.model';
 import { IBoard, IBoardItem } from '../../models/board.model';
 
 @Injectable({
@@ -27,6 +27,7 @@ export class BoardService {
       for (let j = 0; j < size; j++) {
         boardSchema[i][j] = {
           shipType: null,
+          shipId: null,
           occupied: false,
           crushed: false
         };
@@ -38,14 +39,15 @@ export class BoardService {
         boardSchema[location.row][location.column] = {
           shipType: ship.type,
           occupied: true,
-          crushed: false
+          crushed: false,
+          shipId: ship.id
         };
       });
     });
 
     return {
       schema: boardSchema,
-      ships: locatedShips
+      ships
     };
   }
 
@@ -113,12 +115,20 @@ export class BoardService {
     return false;
   }
 
-  randomShot(player, boardSchema: IBoardItem[][]) {
+  randomShot(player, board: IBoard) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
-    if (boardSchema[randomRow][randomColumn].occupied) {
+    if (board.schema[randomRow][randomColumn].occupied) {
+      const _shipId = board.schema[randomRow][randomColumn].shipId;
       player.points = player.points + 1;
+      const crushedShip = board.ships.find(ship => ship.id === _shipId);
+      crushedShip.locations = crushedShip.locations.filter(location => !(location.row === randomRow && location.column === randomColumn));
+      if (crushedShip.locations.length === 0) {
+        board.ships = board.ships.filter(ship => ship.id !== _shipId);
+      }
+      board.schema[randomRow][randomColumn].occupied = false;
     }
-    boardSchema[randomRow][randomColumn] = {...boardSchema[randomRow][randomColumn], crushed: true };
+    board.schema[randomRow][randomColumn] = {...board.schema[randomRow][randomColumn], crushed: true };
+    console.log(board.ships);
   }
 }
