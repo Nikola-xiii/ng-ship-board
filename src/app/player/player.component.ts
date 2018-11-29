@@ -6,16 +6,14 @@ import { IPlayer } from '../../models/player.model';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent implements OnInit {
+export class PlayerComponent {
   @Input()
   player: IPlayer;
+
   @Output()
   shot = new EventEmitter();
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   playerShot() {
     this.shot.emit(this.player);

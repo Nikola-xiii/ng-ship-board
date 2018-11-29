@@ -6,11 +6,7 @@ import { IBoard } from '../../models/board.model';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss']
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent {
   @Input()
   board: IBoard;
-
-  constructor() {}
-
-  ngOnInit() {}
 }
