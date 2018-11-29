@@ -129,8 +129,6 @@ export class BoardService {
       });
     });
 
-    console.log('all', neighborLocations);
-
     neighborLocations = neighborLocations.filter(location => {
       if (location.row < 0 || location.row > 9) {
         return false;
@@ -142,29 +140,34 @@ export class BoardService {
       return !locations.find(loc => location.row === loc.row && location.column === loc.column);
     });
 
-    console.log('all filtered', neighborLocations);
-
     return neighborLocations;
   }
 
   public randomShot(player: IPlayer, board: IBoard): void {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
-    if (board.schema[randomRow][randomColumn].occupied) {
-      const _shipId = board.schema[randomRow][randomColumn].shipId;
-      player.points = player.points + 1;
-      const crushedShip = board.ships.find(ship => ship.id === _shipId);
-      crushedShip.locations = crushedShip.locations.filter(location => !(location.row === randomRow && location.column === randomColumn));
-      if (crushedShip.locations.length === 0) {
-        board.ships = board.ships.filter(ship => ship.id !== _shipId);
-      }
-      board.schema[randomRow][randomColumn].occupied = false;
-    }
     if (board.schema[randomRow][randomColumn].crushed) {
       this.randomShot(player, board);
     }
+
+    if (board.schema[randomRow][randomColumn].occupied) {
+      player.points = player.points + 1;
+      this.crushedShip(board, {row: randomRow, column: randomColumn});
+    }
     board.schema[randomRow][randomColumn] = {...board.schema[randomRow][randomColumn], crushed: true };
     console.log(board.ships);
+  }
+
+  crushedShip(board: IBoard, shotLocation: ILocation): void {
+    const _shipId = board.schema[shotLocation.row][shotLocation.column].shipId;
+    const crushedShip = board.ships.find(ship => ship.id === _shipId);
+    crushedShip.locations = crushedShip.locations.filter(
+      location => !(location.row === shotLocation.row && location.column === shotLocation.column)
+    );
+    if (crushedShip.locations.length === 0) {
+      board.ships = board.ships.filter(ship => ship.id !== _shipId);
+    }
+    board.schema[shotLocation.row][shotLocation.column].occupied = false;
   }
 
   private getRandomInt(min, max): number {
