@@ -11,26 +11,30 @@ import { IPlayer } from '../models/player.model';
 })
 export class AppComponent {
   title = 'Ship Board Game';
-  ships: Partial<IShip>[] = [
+  ships: IShip[] = [
     {
       id: 1,
       type: ShipTypes.L,
-      width: 4
+      width: 4,
+      locations: []
     },
     {
       id: 2,
       type: ShipTypes.I,
-      width: 4
+      width: 4,
+      locations: []
     },
     {
       id: 3,
       type: ShipTypes.D,
-      width: 1
+      width: 1,
+      locations: []
     },
     {
       id: 4,
       type: ShipTypes.D,
-      width: 1
+      width: 1,
+      locations: []
     },
   ];
   player1: IPlayer = {
