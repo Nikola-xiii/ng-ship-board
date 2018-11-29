@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IShip, ShipDirection } from '../../models/ship.model';
 import { IBoard, IBoardItem } from '../../models/board.model';
+import { IPlayer } from '../../models/player.model';
 
 @Injectable({
   providedIn: 'root'
@@ -115,7 +116,7 @@ export class BoardService {
     return false;
   }
 
-  randomShot(player, board: IBoard) {
+  randomShot(player: IPlayer, board: IBoard) {
     const randomRow = this.getRandomInt(0, 9);
     const randomColumn = this.getRandomInt(0, 9);
     if (board.schema[randomRow][randomColumn].occupied) {
@@ -127,6 +128,9 @@ export class BoardService {
         board.ships = board.ships.filter(ship => ship.id !== _shipId);
       }
       board.schema[randomRow][randomColumn].occupied = false;
+    }
+    if (board.schema[randomRow][randomColumn].crushed) {
+      this.randomShot(player, board);
     }
     board.schema[randomRow][randomColumn] = {...board.schema[randomRow][randomColumn], crushed: true };
     console.log(board.ships);
