@@ -13,6 +13,7 @@
 </div>
 <div *ngIf="board.ships.length === 0">
   <h3>Game Over!</h3>
-  <h3>Player {{player1.points > player2.points ? player1.name : player2.name}} win!!!</h3>
+  <h3 *ngIf="player1.points !== player2.points">Player {{player1.points > player2.points ? player1.name : player2.name}} win!!!</h3>
+  <h3 *ngIf="player1.points === player2.points">Don't have winner for this game!!!</h3>
 </div>
 

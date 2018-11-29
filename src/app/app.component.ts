@@ -41,13 +41,11 @@ export class AppComponent {
     name: 'User 1',
     shots: 0,
     points: 0,
-    win: false
   };
   player2: IPlayer = {
     name: 'User 2',
     shots: 0,
     points: 0,
-    win: false
   };
   board: IBoard;
 
