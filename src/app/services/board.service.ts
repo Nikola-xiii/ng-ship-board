@@ -39,10 +39,9 @@ export class BoardService {
 
   private buildShips(ships: IShip[], boardSchema: IBoardItem[][]) {
     ships.map(ship => {
-      let locations = {};
+      let locations = [];
       do {
         locations = this.setShipLocation(ship);
-        console.log(this.collision(locations, ships));
       } while (this.collision(locations, ships));
       ship.locations = locations;
     });
@@ -82,20 +81,7 @@ export class BoardService {
   }
 
   private collision(locations: ILocation[], ships: IShip[]): boolean {
-    const neighborLocations = [];
-    locations.forEach(location => {
-      neighborLocations.push({row: location.row - 1, column: location.column});
-      neighborLocations.push({row: location.row + 1, column: location.column});
-
-      neighborLocations.push({row: location.row, column: location.column - 1});
-      neighborLocations.push({row: location.row, column: location.column + 1});
-
-      neighborLocations.push({row: location.row - 1, column: location.column - 1});
-      neighborLocations.push({row: location.row + 1, column: location.column + 1});
-
-      neighborLocations.push({row: location.row + 1, column: location.column - 1});
-      neighborLocations.push({row: location.row - 1, column: location.column + 1});
-    });
+    let neighborLocations = this.getNeighborLocations(locations);
     for (let i = 0; i < ships.length; i++) {
       const ship = ships[i];
 
@@ -117,6 +103,48 @@ export class BoardService {
     }
 
     return false;
+  }
+
+  getNeighborLocations(locations: ILocation[]): ILocation[] {
+    let neighborLocations = [];
+    locations.forEach(location => {
+      const allLocations = [
+          {row: location.row - 1, column: location.column},
+          {row: location.row + 1, column: location.column},
+          {row: location.row, column: location.column - 1},
+          {row: location.row, column: location.column + 1},
+          {row: location.row - 1, column: location.column - 1},
+          {row: location.row + 1, column: location.column + 1},
+          {row: location.row + 1, column: location.column - 1},
+          {row: location.row - 1, column: location.column + 1}
+        ];
+
+      allLocations.forEach(item => {
+        if (!neighborLocations.length) {
+          neighborLocations.push(item);
+        }
+        if (!neighborLocations.find(loc => item.row === loc.row && item.column === loc.column)) {
+          neighborLocations.push(item);
+        }
+      });
+    });
+
+    console.log('all', neighborLocations);
+
+    neighborLocations = neighborLocations.filter(location => {
+      if (location.row < 0 || location.row > 9) {
+        return false;
+      }
+      if (location.column < 0 || location.column > 9) {
+        return false;
+      }
+
+      return !locations.find(loc => location.row === loc.row && location.column === loc.column);
+    });
+
+    console.log('all filtered', neighborLocations);
+
+    return neighborLocations;
   }
 
   public randomShot(player: IPlayer, board: IBoard): void {
